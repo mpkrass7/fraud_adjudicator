@@ -1,9 +1,11 @@
 import numpy as np
 import pandas as pd
+from PIL import Image
 import streamlit as st
 
 
 def createLayout():
+    title_container = st.container()
     # Layout
     container1 = st.container()
     # logo, province = container1.columns([4, 1])
@@ -12,7 +14,17 @@ def createLayout():
     col0, col1, col2, col3, col4 = container2.columns([2, 2, 1, 1, 2])
     container3 = st.container()
 
-    return (container1, container2, col0, col1, col2, col3, col4, container3)
+    return (
+        title_container,
+        container1,
+        container2,
+        col0,
+        col1,
+        col2,
+        col3,
+        col4,
+        container3,
+    )
 
 
 def format(x):
@@ -44,14 +56,43 @@ st.set_page_config(
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 
-st.title(PAGE_CONFIG["page_title"])
-container1, container2, col0, col1, col2, col3, col4, container3 = createLayout()
+# st.title(PAGE_CONFIG["page_title"])
+(
+    title_container,
+    container1,
+    container2,
+    col0,
+    col1,
+    col2,
+    col3,
+    col4,
+    container3,
+) = createLayout()
+
+with title_container:
+    try:
+        LogoImage = Image.open(
+            "www/covid-nowcasting/DataRobot-Promo-Logo-Color-Big.jpg"
+        )
+    except FileNotFoundError:  # Running locally
+        import os
+
+        image_path = os.path.join(
+            os.path.dirname(__file__), "www/DataRobot-Promo-Logo-Color-Big.jpg"
+        )
+        LogoImage = Image.open(image_path)
+    st.image(LogoImage, width=300)
+    # title_loc.header("Fraud Alert Adjudicator")
+    st.markdown(
+        "<h2 style='color:black; font-size: 20; margin-top: -20px'>Fraud Alert Adjudicator</p>",
+        unsafe_allow_html=True,
+    )
 
 
 with container1:
     st.write(
         """
-    <h3>Description</h3>
+    <h3 style='margin-top:-30px'>Description</h3>
     This application is designed to assist in the adjudication of money laundering alerts.
     <br> 
     Users can toggle criticality thresholds between SMARTS and the DataRobot computed probability of fraud.
